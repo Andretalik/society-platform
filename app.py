@@ -1,5 +1,6 @@
 """Main app module."""
 from flask import Flask, jsonify
+from flask_restplus import Api
 
 from api.models import db
 
@@ -7,6 +8,15 @@ try:
     from .config import configuration
 except ImportError:
     from config import configuration
+
+
+# initilize api
+api = Api(
+    default='Api',
+    default_label="Available Endpoints",
+    title='🗣️ Open-Platform Api 😱',
+    version='1.0',
+    description="""Open-Platform Api Endpoint Documentation 📚""")
 
 
 def create_app(enviroment="Development"):
@@ -20,6 +30,13 @@ def create_app(enviroment="Development"):
     app = Flask(__name__)
     app.config.from_object(configuration[enviroment])
     db.init_app(app)
+
+    # all urls/routes should be configured/added here
+    from api.points_endpoint import PointResource
+    api.add_resource(PointResource, '/points/')
+
+    # initialize api after adding routes
+    api.init_app(app)
 
     # handle default 404 exceptions with a custom response
     @app.errorhandler(404)
