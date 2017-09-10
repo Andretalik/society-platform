@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route} from 'react-router-dom';
+import GoogleLogin from 'react-google-login';
+import axios from 'axios';
+import API_URL from '../App.Config';
 import SocietyPage from './pages/SocietyPage';
 import StatsPage from './pages/StatsPage';
 import HomePage from './pages/HomePage';
@@ -17,6 +20,12 @@ class App extends Component {
     constructor(props){
         super(props);
         this.bindEvents();
+        this.xhr = axios.create({
+            timeout: 20000,
+            baseURL: API_URL,
+            
+        });
+        this.login();
     }
 
     getDefaultState(){
@@ -43,10 +52,15 @@ class App extends Component {
         this.addActivity = this.addActivity.bind(this);
         this.showActivityForm = this.showActivityForm.bind(this);
         this.logout = this.logout.bind(this);
+        this.responseGoogle = this.responseGoogle.bind(this);
     }
 
     componentWillMount(){
         this.state = this.getDefaultState();
+        // this.xhr.get('/activities')
+        // .then(response => {
+        //     console.log(response);
+        // })
     }
 
     closeLightbox(){
@@ -125,7 +139,27 @@ class App extends Component {
     }
 
     login(){
+        let token = localStorage.getItem("token");
 
+        if (token === ""){
+            const query = window.location.search.split("?token=");
+            if (query.length === 2){
+                console.log('Yeah!!');
+                token = query[1];
+                localStorage.setItem("token", token);
+                
+                
+            }
+        }
+        this.xhr.defaults.headers['Authorization'] = token;
+        this.xhr.get('/activities')
+        .then(response => {
+            console.log(response);
+            
+        })
+        .catch(() => {
+            
+        });
     }
 
     logout(){
@@ -165,6 +199,14 @@ class App extends Component {
                 isWorking={this.state.newActivity.isWorking} />);
     }
 
+    responseGoogle(response){
+        this.xhr.defaults.headers['Authorization'] = response.tokenObj.access_token;
+        this.xhr.get('/activities')
+        .then(response => {
+            console.log(response);
+        })
+    }
+
     renderAccountAction(){
         if (this.state.isLoggedIn){
             return (
@@ -183,7 +225,12 @@ class App extends Component {
         }
 
         return (
-            <a id="login-btn">Login</a>
+            <a id="login-btn" href="https://api.andela.com/login?redirect_url=http://localhost:3000">Login</a>
+            // <GoogleLogin id="login-btn"
+            //     clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+            //     buttonText="Sign in"
+            //     onSuccess={this.responseGoogle}
+            //     onFailure={this.responseGoogle} />
         );
     }
 
@@ -194,9 +241,9 @@ class App extends Component {
                         <div id="content" 
                             className={this.getSidebarClass()}>
                         <aside id="sidebar">
-                            <Route exact path="*" component={Sidebar} />
+                            <Route path="*" component={Sidebar} />
                         </aside>
-                        <div id="app-content" onClick={this.resetUI}>
+                        <div id="app-content">
                             <a href="" id="menu-icon" onClick={this.toggleSidebar}>
                                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 139 139"><line className="st0" id="XMLID_6_" x1="26.5" x2="112.5" y1="46.3" y2="46.3"/><line className="st0" id="XMLID_9_" x1="26.5" x2="112.5" y1="92.7" y2="92.7"/><line className="st0" id="XMLID_8_" x1="26.5" x2="112.5" y1="69.5" y2="69.5"/></svg>
                             </a>

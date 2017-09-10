@@ -236,18 +236,22 @@ table#activity-form textarea{
     text-align: right;
 }
 
-#login-btn{
-    text-decoration: none;
-    background: white;
-    color: #555;
-    display: inline-block;
-    padding: 4px 12px;
-    cursor: pointer;
-    border: 1px solid #eee;
-    border-radius: 3px;
+#account-tools button{
+    text-decoration: none !important;
+    background: white !important;
+    color: #555 !important;
+    display: inline-block !important;
+    padding: 4px 12px !important;
+    cursor: pointer !important;
+    border: 1px solid #eee !important;
+    border-radius: 3px !important;
+    font-size: inherit !important;
+    font-weight: normal !important;
+    font-family: inherit !important;
+    width: auto !important;
 }
 
-#login-btn:hover{
+#account-tools button:hover{
     opacity: .9;
 }
 
