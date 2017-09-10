@@ -21,10 +21,12 @@ const ActivityLogsPage = props => {
                         <div id="">
                             <table id="activities-table">
                                 <thead>
-                                    <th>Name</th>
-                                    <th>Activity</th>
-                                    <th className="center-text">No. of points</th>
-                                    <th></th>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Activity</th>
+                                        <th className="center-text">No. of points</th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr>

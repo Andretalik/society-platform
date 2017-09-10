@@ -4,6 +4,7 @@ import SocietyInfo from '../SocietyInfo';
 import Score from '../Score';
 
 const SocietyPage = props => {
+    
     return (
         <div id="app-header" style={{backgroundImage: `url(https://photos.smugmug.com/Archives/Kenya/Internal-Events/Andela-Kenya-Turns-2/i-n6gSgRB/1/53c1e45f/X3/AndelaKenya2ndAnniversary_10-X3.jpg)`}}>
             <div className="container">
@@ -14,8 +15,8 @@ const SocietyPage = props => {
                 <div id="account-tools">
                     {props.accountAction}
                 </div>
-                <SocietyInfo name="Invicticus" 
-                    statement="We are invicticus"
+                <SocietyInfo name={props.society.name}
+                    statement={""}
                     badge="http://via.placeholder.com/150x150" />
 
                 <Score score="3,382"

@@ -16,7 +16,7 @@ const HomePage = props => {
                 <div id="page-content">
                     <div id="main-page-content">
                         <header id="page-header">
-                            <h2 id="page-title"></h2>
+                            {/* <h2 id="page-title"></h2> */}
                         </header>
                         <div id="">
                         </div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route} from 'react-router-dom';
-import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 import API_URL from '../App.Config';
 import SocietyPage from './pages/SocietyPage';
@@ -34,12 +33,15 @@ class App extends Component {
             iconClicked: false,
             showSidebar: false,
             showActivityForm: false,
+            societies: [],
+            activities: [],
             newActivity: {
                 name: '',
                 comment: '',
                 quantity: 1,
                 isWorking: false
-            }
+            },
+            userData: {}
         };
     }
 
@@ -52,15 +54,59 @@ class App extends Component {
         this.addActivity = this.addActivity.bind(this);
         this.showActivityForm = this.showActivityForm.bind(this);
         this.logout = this.logout.bind(this);
-        this.responseGoogle = this.responseGoogle.bind(this);
     }
 
     componentWillMount(){
         this.state = this.getDefaultState();
-        // this.xhr.get('/activities')
+        this.loadSocieties();
+        this.loadActivities();
+        this.loadUserData();
+    }
+
+    loadUserData(){
+        let {state} = this,
+        self = this;
+        return this.xhr.get('/user/profile')
+        .then(response => {
+            state.userData = response.data.data;
+            self.setState(state);
+        });
+    }
+
+    loadActivities(){
+        let self = this,
+        {state} = self;
+        
+        return this.xhr.get('/activities')
+        .then(response => {
+            state.isLoggedIn = true;
+            state.activities = response.data.data
+            self.setState(state);
+        });
+    }
+
+    loadSocieties(){
+        let self = this,
+        {state} = self;
+        
+        // return this.xhr.get('/societies')
         // .then(response => {
-        //     console.log(response);
-        // })
+        //     state.isLoggedIn = true;
+        //     state.societies = response.data.data
+        //     self.setState(state);
+        // });
+        state.societies = [
+            {
+                "colorScheme": "#333333",
+                "createdAt": "Sun, 10 Sep 2017 15:33:07 GMT",
+                "logo": "https://logo.png",
+                "name": "Invictus",
+                "photo": null,
+                "uuid": "5819fbf8-963d-11e7-8616-c4b301d36f51"
+            }
+        ];
+
+        self.setState(state);
     }
 
     closeLightbox(){
@@ -95,8 +141,7 @@ class App extends Component {
     resetUI(event){
         this.setState(prevState => {
             return {
-                showLogout: false,
-                showSidebar: false
+                showLogout: false
             }
         })
     }
@@ -140,30 +185,26 @@ class App extends Component {
 
     login(){
         let token = localStorage.getItem("token");
-
-        if (token === ""){
+    
+        if (token === null){
             const query = window.location.search.split("?token=");
             if (query.length === 2){
-                console.log('Yeah!!');
                 token = query[1];
-                localStorage.setItem("token", token);
                 
+                localStorage.setItem("token", token);
                 
             }
         }
+        
         this.xhr.defaults.headers['Authorization'] = token;
-        this.xhr.get('/activities')
-        .then(response => {
-            console.log(response);
-            
-        })
-        .catch(() => {
-            
-        });
     }
 
-    logout(){
-        
+    logout(event){
+        event.preventDefault();
+        localStorage.removeItem("token");
+        let {state} = this;
+        state.state = this.getDefaultState();
+        this.setState(state);
     }
 
     toggleSidebar(event){
@@ -196,15 +237,8 @@ class App extends Component {
                 onChange={this.onActivityChange}
                 close={this.closeLightbox}
                 addActivity={this.addActivity}
+                activities={this.state.activities}
                 isWorking={this.state.newActivity.isWorking} />);
-    }
-
-    responseGoogle(response){
-        this.xhr.defaults.headers['Authorization'] = response.tokenObj.access_token;
-        this.xhr.get('/activities')
-        .then(response => {
-            console.log(response);
-        })
     }
 
     renderAccountAction(){
@@ -212,11 +246,12 @@ class App extends Component {
             return (
                 <div>
                     <div id="account-icon" onClick={this.toggleLogout}>
-                        <img alt="Profile" src="http://via.placeholder.com/45x45" />
+                        <img alt="Profile" src={this.state.userData.photo} />
                     </div>
                     {this.state.showLogout? 
                         <div id="account-actions">
-                            <a href="" className="account-action">Logout</a>
+                            <span className="account-name">{this.state.userData.name}</span>
+                            <a href="" className="account-action" onClick={this.logout}>Logout</a>
                         </div>:
                         <span />
                         }
@@ -226,11 +261,6 @@ class App extends Component {
 
         return (
             <a id="login-btn" href={"https://api.andela.com/login?redirect_url="+window.location}>Login</a>
-            // <GoogleLogin id="login-btn"
-            //     clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-            //     buttonText="Sign in"
-            //     onSuccess={this.responseGoogle}
-            //     onFailure={this.responseGoogle} />
         );
     }
 
@@ -241,9 +271,11 @@ class App extends Component {
                         <div id="content" 
                             className={this.getSidebarClass()}>
                         <aside id="sidebar">
-                            <Route path="*" component={Sidebar} />
+                            <Route path="*" component={() => {
+                                return <Sidebar societies={this.state.societies} />
+                            }} />
                         </aside>
-                        <div id="app-content">
+                        <div id="app-content" onClick={this.resetUI}>
                             <a href="" id="menu-icon" onClick={this.toggleSidebar}>
                                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 139 139"><line className="st0" id="XMLID_6_" x1="26.5" x2="112.5" y1="46.3" y2="46.3"/><line className="st0" id="XMLID_9_" x1="26.5" x2="112.5" y1="92.7" y2="92.7"/><line className="st0" id="XMLID_8_" x1="26.5" x2="112.5" y1="69.5" y2="69.5"/></svg>
                             </a>
@@ -260,11 +292,17 @@ class App extends Component {
                                         return <ActivityLogsPage logo={blueLogo}
                                             accountAction={this.renderAccountAction()} />
                                     }} />
-                                    <Route exact path="/society/" component={() => {
+                                    <Route path="/society/:id" component={({match}) => {
+
+                                        let societyIndex = this.state.societies.findIndex(society => {
+                                            return society.uuid === match.params.id;
+                                        })
+
                                         return <SocietyPage logo={whiteLogo}
                                             accountAction={this.renderAccountAction()}
                                             logout={this.logout}
                                             login={this.login}
+                                            society={this.state.societies[societyIndex]}
                                             showActivityForm={this.showActivityForm} /> 
                                     }} />
                                     <Route exact path="/stats" component={() => {

@@ -1,6 +1,11 @@
 import React from 'react';
 
 const ActivityForm = (props) => {
+
+    const activities = props.activities.map(activity => {
+        return <option key={activity.uuid} value={activity.uuid}>{activity.name}</option>
+    });
+
     return (
         <div>
             <table id="activity-form">
@@ -13,8 +18,7 @@ const ActivityForm = (props) => {
                             <div>
                                 <select name="name" value={props.name}
                                     onChange={props.onChange}>
-                                    <option value="d">Organizing a tech event</option>
-                                    <option value="e">Interviewing candidates for a fellow recruitment event</option>
+                                    {activities}
                                 </select>
                             </div>
                         </td>

@@ -21,9 +21,11 @@ const Contributions = props => {
                         <div id="">
                             <table id="activities-table" className="contributions">
                                 <thead>
-                                    <th>Activity</th>
-                                    <th className="center-text">No. of points</th>
-                                    <th></th>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th className="center-text">No. of points</th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr>

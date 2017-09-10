@@ -25,7 +25,7 @@
 }
 
 #logo{
-    display: block;
+    display: inline-block;
     text-decoration: none;
     user-select: none;
 }
@@ -69,6 +69,14 @@
     margin-top: 6px;
     background: white;
     color: #eee;
+    width: 200px;
+}
+
+#account-actions .account-name{
+    display: block;
+    padding: 20px 31px;
+    color: #555;
+    border-bottom: 1px solid #eee;
 }
 
 a.account-action{
