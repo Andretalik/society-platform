@@ -236,7 +236,7 @@ table#activity-form textarea{
     text-align: right;
 }
 
-#account-tools button{
+#account-tools button, #login-btn{
     text-decoration: none !important;
     background: white !important;
     color: #555 !important;
@@ -251,7 +251,7 @@ table#activity-form textarea{
     width: auto !important;
 }
 
-#account-tools button:hover{
+#account-tools button:hover, #login-btn:hover{
     opacity: .9;
 }
 

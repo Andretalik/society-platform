@@ -225,7 +225,7 @@ class App extends Component {
         }
 
         return (
-            <a id="login-btn" href="https://api.andela.com/login?redirect_url=http://localhost:3000">Login</a>
+            <a id="login-btn" href={"https://api.andela.com/login?redirect_url="+window.location}>Login</a>
             // <GoogleLogin id="login-btn"
             //     clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
             //     buttonText="Sign in"
