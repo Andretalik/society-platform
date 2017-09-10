@@ -36,6 +36,7 @@ class App extends Component {
             societies: [],
             activities: [],
             newActivity: {
+                activityId: '',
                 name: '',
                 comment: '',
                 quantity: 1,
@@ -66,7 +67,7 @@ class App extends Component {
     loadUserData(){
         let {state} = this,
         self = this;
-        return this.xhr.get('/user/profile')
+        return this.xhr.get('/user/profile/')
         .then(response => {
             state.userData = response.data.data;
             self.setState(state);
@@ -77,36 +78,30 @@ class App extends Component {
         let self = this,
         {state} = self;
         
-        return this.xhr.get('/activities')
+        return this.xhr.get('/activities/')
         .then(response => {
             state.isLoggedIn = true;
-            state.activities = response.data.data
+            state.activities = response.data.data;
             self.setState(state);
         });
     }
 
     loadSocieties(){
         let self = this,
-        {state} = self;
-        
-        // return this.xhr.get('/societies')
-        // .then(response => {
-        //     state.isLoggedIn = true;
-        //     state.societies = response.data.data
-        //     self.setState(state);
-        // });
-        state.societies = [
-            {
-                "colorScheme": "#333333",
-                "createdAt": "Sun, 10 Sep 2017 15:33:07 GMT",
-                "logo": "https://logo.png",
-                "name": "Invictus",
-                "photo": null,
-                "uuid": "5819fbf8-963d-11e7-8616-c4b301d36f51"
-            }
-        ];
-
-        self.setState(state);
+            {state} = self,
+            societies = window.localStorage.getItem("societies");
+        if (societies){
+            state.societies = JSON.parse(societies);
+            self.setState(state);
+        } else {
+            this.xhr.get('/societies/')
+            .then(response => {
+                state.isLoggedIn = true;
+                state.societies = response.data.data.societies;
+                window.localStorage.setItem("societies", JSON.stringify(state.societies));
+                self.setState(state);
+            });
+        }
     }
 
     closeLightbox(){
@@ -118,13 +113,27 @@ class App extends Component {
     }
 
     addActivity(event){
-        const formData = {
-            name: this.state.newActivity.name,
-            quantity: this.state.newActivity.quantity,
-            comment: this.state.newActivity.comment
-        }
+        event.preventDefault();
+        let {state} = this,
+        self = this;
 
-        console.log(formData)
+        const data = {
+            activity_id: this.state.newActivity.activityId,
+            name: this.state.newActivity.name,
+            description: this.state.newActivity.comment,
+            value: this.state.newActivity.quantity
+        }
+        
+        this.xhr.post('/points/', data)
+        .then(response => {
+            console.log(response.data);
+            state.newActivity = self.getDefaultState().newActivity;
+            alert("You logged a new activity");
+            self.setState(state)
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     toggleLogout(event){
@@ -245,6 +254,7 @@ class App extends Component {
         if (this.state.isLoggedIn){
             return (
                 <div>
+                    <button id="fab" onClick={this.showActivityForm}>Log an activity</button>
                     <div id="account-icon" onClick={this.toggleLogout}>
                         <img alt="Profile" src={this.state.userData.photo} />
                     </div>
@@ -302,8 +312,8 @@ class App extends Component {
                                             accountAction={this.renderAccountAction()}
                                             logout={this.logout}
                                             login={this.login}
-                                            society={this.state.societies[societyIndex]}
-                                            showActivityForm={this.showActivityForm} /> 
+                                            score="30499"
+                                            society={this.state.societies[societyIndex]} /> 
                                     }} />
                                     <Route exact path="/stats" component={() => {
                                         return <StatsPage logo={blueLogo}
@@ -315,6 +325,7 @@ class App extends Component {
                     </div>
                     
                     {this.renderActivityForm()}
+                    
                 </div>
             </BrowserRouter>
     );

@@ -19,8 +19,7 @@ const SocietyPage = props => {
                     statement={""}
                     badge="http://via.placeholder.com/150x150" />
 
-                <Score score="3,382"
-                    showForm={props.showActivityForm} />
+                <Score score={props.score} />
             </div>
         </div>
     );

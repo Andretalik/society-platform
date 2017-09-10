@@ -1,7 +1,7 @@
 #app-header{
     position: relative;
     color: white;
-    height: 100vh;
+    height: 100%;
     box-sizing: border-box;
 }
 
@@ -61,6 +61,9 @@
     background: #eee;
     cursor: pointer;
     overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
 }
 
 #account-actions{
@@ -116,7 +119,6 @@ a.account-action:hover{
 }
 
 #points-indicator{
-    margin-bottom: 100px;
     text-align: right;
 }
 
@@ -137,11 +139,11 @@ a.account-action:hover{
     border-radius: 17px;
 }
 
-#edit-button{
+#fab{
+    display: inline-block;
     padding: 12px;
-    width: 120px;
     background: white;
-    font-size: 13px;
+    font-size: 14px;
     border: 0;
     cursor: pointer;
     outline: none;
@@ -150,7 +152,7 @@ a.account-action:hover{
     background: #307927;
 }
 
-#edit-button:hover{
+#fab:hover{
     background: #38902e;
 }
 
@@ -244,7 +246,7 @@ table#activity-form textarea{
     text-align: right;
 }
 
-#account-tools button, #login-btn{
+#login-btn{
     text-decoration: none !important;
     background: white !important;
     color: #555 !important;
@@ -259,7 +261,7 @@ table#activity-form textarea{
     width: auto !important;
 }
 
-#account-tools button:hover, #login-btn:hover{
+#login-btn:hover{
     opacity: .9;
 }
 

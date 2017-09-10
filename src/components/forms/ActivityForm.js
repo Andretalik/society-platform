@@ -7,7 +7,7 @@ const ActivityForm = (props) => {
     });
 
     return (
-        <div>
+        <form onSubmit={props.addActivity}>
             <table id="activity-form">
                 <tbody>
                     <tr>
@@ -16,10 +16,27 @@ const ActivityForm = (props) => {
                         </td>
                         <td>
                             <div>
-                                <select name="name" value={props.name}
-                                    onChange={props.onChange}>
+                                <select name="activityId" 
+                                    value={props.activityId}
+                                    onChange={props.onChange}
+                                    required>
+                                    <option value={props.name}>Select</option>
                                     {activities}
                                 </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span className="label">Name of event/activity</span>
+                        </td>
+                        <td>
+                            <div>
+                                <input value={props.name}
+                                    onChange={props.onChange} 
+                                    name="name" 
+                                    type="text"
+                                    required />
                             </div>
                         </td>
                     </tr>
@@ -51,13 +68,12 @@ const ActivityForm = (props) => {
                         <button id="cancel"
                             onClick={props.close}>Cancel</button>
                         <button id="submit"
-                            onClick={props.addActivity}
                             disabled={props.isWorking}>Log</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </form>
     );
 }
 
